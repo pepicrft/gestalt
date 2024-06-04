@@ -1,0 +1,11 @@
+{
+  "name": "@gestaltjs/gestalt",
+  "version": "0.1.0",
+  "description": "A full-stack JavaScript framework built on standards",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
