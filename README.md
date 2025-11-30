@@ -1,6 +1,8 @@
 # Gestalt
 
-A self-hostable AI partner that communicates via Telegram. Run it on a Raspberry Pi, a Hetzner VPS, or your local machine, and chat with it like a knowledgeable friend who can execute code, manage files, and help with software development.
+A self-hostable AI partner that communicates via Telegram. Run it on any host where Erlang can run - a Raspberry Pi, a Hetzner server, a spare laptop, or your main machine. Chat with it like a knowledgeable friend who can execute code, manage files, and help with software development.
+
+Running Gestalt on your local network gives you access to interfaces scoped to that network, like IoT devices, home automation systems, or internal services that aren't exposed to the internet.
 
 ## Features
 
