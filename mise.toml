@@ -1,0 +1,9 @@
+[settings]
+lockfile = true
+
+[tools]
+elixir = "latest"
+erlang = "latest"
+"node" = "24.11.1"
+"npm:@openai/codex" = "0.63.0"
+"npm:@anthropic-ai/claude-code" = "2.0.55"
