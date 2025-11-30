@@ -36,6 +36,9 @@ if config_env() != :test do
       other -> raise "Unknown coding agent: #{other}. Use 'claude_code' or 'codex'."
     end
 
+  # Anthropic API configuration for LLM
+  config :gestalt, :anthropic, api_key: System.get_env("ANTHROPIC_API_KEY")
+
   # API keys for coding agents
   config :gestalt, :api_keys,
     anthropic: System.get_env("ANTHROPIC_API_KEY"),

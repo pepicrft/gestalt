@@ -9,6 +9,8 @@ defmodule Gestalt.Telegram.Poller do
 
   use GenServer
 
+  alias Gestalt.Conversation.Server, as: ConversationServer
+  alias Gestalt.Conversation.Supervisor, as: ConversationSupervisor
   alias Gestalt.Telegram.Client
 
   require Logger
@@ -126,12 +128,19 @@ defmodule Gestalt.Telegram.Poller do
   defp handle_message(chat_id, user_id, text) do
     Logger.info("Received message from user #{user_id}: #{text}")
 
-    case Client.send_message(chat_id, "Ack: #{text}") do
-      {:ok, _} ->
-        :ok
+    # Ensure conversation server is running
+    case ConversationSupervisor.ensure_conversation(chat_id, user_id) do
+      {:ok, _pid} ->
+        # Send message to conversation server (handles LLM and response)
+        ConversationServer.send_message(chat_id, text)
 
       {:error, reason} ->
-        Logger.error("Failed to send message: #{inspect(reason)}")
+        Logger.error("Failed to start conversation: #{inspect(reason)}")
+
+        Client.send_message(
+          chat_id,
+          "Sorry, I'm having trouble starting our conversation. Please try again."
+        )
     end
   end
 

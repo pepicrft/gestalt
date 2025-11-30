@@ -15,6 +15,9 @@ defmodule Gestalt.Application do
          repos: Application.fetch_env!(:gestalt, :ecto_repos), skip: skip_migrations?()},
         {DNSCluster, query: Application.get_env(:gestalt, :dns_cluster_query) || :ignore},
         {Phoenix.PubSub, name: Gestalt.PubSub},
+        # Conversation management
+        {Registry, keys: :unique, name: Gestalt.Conversation.Registry},
+        Gestalt.Conversation.Supervisor,
         # Start to serve requests, typically the last entry
         GestaltWeb.Endpoint
       ] ++ telegram_children()
