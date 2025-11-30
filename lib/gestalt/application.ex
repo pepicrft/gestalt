@@ -7,18 +7,17 @@ defmodule Gestalt.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      GestaltWeb.Telemetry,
-      Gestalt.Repo,
-      {Ecto.Migrator,
-       repos: Application.fetch_env!(:gestalt, :ecto_repos), skip: skip_migrations?()},
-      {DNSCluster, query: Application.get_env(:gestalt, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: Gestalt.PubSub},
-      # Start a worker by calling: Gestalt.Worker.start_link(arg)
-      # {Gestalt.Worker, arg},
-      # Start to serve requests, typically the last entry
-      GestaltWeb.Endpoint
-    ]
+    children =
+      [
+        GestaltWeb.Telemetry,
+        Gestalt.Repo,
+        {Ecto.Migrator,
+         repos: Application.fetch_env!(:gestalt, :ecto_repos), skip: skip_migrations?()},
+        {DNSCluster, query: Application.get_env(:gestalt, :dns_cluster_query) || :ignore},
+        {Phoenix.PubSub, name: Gestalt.PubSub},
+        # Start to serve requests, typically the last entry
+        GestaltWeb.Endpoint
+      ] ++ telegram_children()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
@@ -37,5 +36,15 @@ defmodule Gestalt.Application do
   defp skip_migrations? do
     # By default, sqlite migrations are run when using a release
     System.get_env("RELEASE_NAME") == nil
+  end
+
+  defp telegram_children do
+    telegram_config = Application.get_env(:gestalt, :telegram)
+
+    if telegram_config[:bot_token] do
+      [Gestalt.Telegram.Poller]
+    else
+      []
+    end
   end
 end
