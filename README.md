@@ -172,13 +172,17 @@ This runs:
 2. Install dependencies with Mise and build the release:
    ```bash
    mise install
-   MIX_ENV=prod mix deps.get
+   mix deps.get --only prod
    MIX_ENV=prod mix release
    ```
+
+   The release will be created at `_build/prod/rel/gestalt`.
 
 3. Configure the app to run as a daemon (see platform-specific instructions below).
 
 ### Running as a Daemon
+
+The examples below assume you cloned the repository to `/opt/gestalt`. The release binary requires Erlang, so we use `mise exec -C <project-dir>` to ensure the correct runtime version (as pinned in the project) is available.
 
 #### Linux (systemd)
 
@@ -200,7 +204,7 @@ Environment=TELEGRAM_BOT_TOKEN=your-token
 Environment=TELEGRAM_ALLOWED_USERS=123456789
 Environment=GESTALT_CODING_AGENT=claude_code
 Environment=ANTHROPIC_API_KEY=your-key
-ExecStart=/opt/gestalt/bin/gestalt start
+ExecStart=/usr/bin/mise exec -C /opt/gestalt -- /opt/gestalt/_build/prod/rel/gestalt/bin/gestalt start
 Restart=on-failure
 
 [Install]
@@ -226,7 +230,12 @@ Create `~/Library/LaunchAgents/com.gestalt.plist`:
     <string>com.gestalt</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/opt/gestalt/bin/gestalt</string>
+        <string>/usr/local/bin/mise</string>
+        <string>exec</string>
+        <string>-C</string>
+        <string>/opt/gestalt</string>
+        <string>--</string>
+        <string>/opt/gestalt/_build/prod/rel/gestalt/bin/gestalt</string>
         <string>start</string>
     </array>
     <key>WorkingDirectory</key>
@@ -272,7 +281,7 @@ Use [NSSM (Non-Sucking Service Manager)](https://nssm.cc/) to run Gestalt as a W
 1. Download and install NSSM
 2. Open an elevated command prompt and run:
    ```cmd
-   nssm install Gestalt C:\gestalt\bin\gestalt.bat start
+   nssm install Gestalt C:\Users\YourUser\.local\bin\mise.exe exec -C C:\gestalt -- C:\gestalt\_build\prod\rel\gestalt\bin\gestalt.bat start
    nssm set Gestalt AppDirectory C:\gestalt
    nssm set Gestalt AppEnvironmentExtra PHX_SERVER=true DATABASE_PATH=C:\gestalt\gestalt.db SECRET_KEY_BASE=your-secret-key TELEGRAM_BOT_TOKEN=your-token TELEGRAM_ALLOWED_USERS=123456789 GESTALT_CODING_AGENT=claude_code ANTHROPIC_API_KEY=your-key
    nssm start Gestalt
