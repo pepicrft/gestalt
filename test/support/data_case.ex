@@ -20,12 +20,12 @@ defmodule Gestalt.DataCase do
 
   using do
     quote do
-      alias Gestalt.Repo
-
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
       import Gestalt.DataCase
+
+      alias Gestalt.Repo
     end
   end
 

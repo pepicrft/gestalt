@@ -28,10 +28,6 @@ if config_env() != :test do
       users -> users |> String.split(",") |> Enum.map(&String.to_integer/1)
     end
 
-  config :gestalt, :telegram,
-    bot_token: telegram_token,
-    allowed_users: allowed_users
-
   # Coding agent configuration
   coding_agent =
     case System.get_env("GESTALT_CODING_AGENT", "claude_code") do
@@ -40,12 +36,16 @@ if config_env() != :test do
       other -> raise "Unknown coding agent: #{other}. Use 'claude_code' or 'codex'."
     end
 
-  config :gestalt, :coding_agent, coding_agent
-
   # API keys for coding agents
   config :gestalt, :api_keys,
     anthropic: System.get_env("ANTHROPIC_API_KEY"),
     openai: System.get_env("OPENAI_API_KEY")
+
+  config :gestalt, :coding_agent, coding_agent
+
+  config :gestalt, :telegram,
+    bot_token: telegram_token,
+    allowed_users: allowed_users
 end
 
 if config_env() == :prod do
@@ -56,10 +56,6 @@ if config_env() == :prod do
       For example: /etc/gestalt/gestalt.db
       """
 
-  config :gestalt, Gestalt.Repo,
-    database: database_path,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
-
   secret_key_base =
     System.get_env("SECRET_KEY_BASE") ||
       raise """
@@ -68,6 +64,10 @@ if config_env() == :prod do
       """
 
   host = System.get_env("PHX_HOST") || "localhost"
+
+  config :gestalt, Gestalt.Repo,
+    database: database_path,
+    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
 
   config :gestalt, GestaltWeb.Endpoint,
     url: [host: host],

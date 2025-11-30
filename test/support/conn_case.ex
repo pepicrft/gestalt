@@ -19,15 +19,15 @@ defmodule GestaltWeb.ConnCase do
 
   using do
     quote do
+      use GestaltWeb, :verified_routes
+
+      import GestaltWeb.ConnCase
+      import Phoenix.ConnTest
+      import Plug.Conn
       # The default endpoint for testing
       @endpoint GestaltWeb.Endpoint
 
-      use GestaltWeb, :verified_routes
-
       # Import conveniences for testing with connections
-      import Plug.Conn
-      import Phoenix.ConnTest
-      import GestaltWeb.ConnCase
     end
   end
 

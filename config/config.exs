@@ -7,10 +7,6 @@
 # General application configuration
 import Config
 
-config :gestalt,
-  ecto_repos: [Gestalt.Repo],
-  generators: [timestamp_type: :utc_datetime]
-
 # Configure the endpoint
 config :gestalt, GestaltWeb.Endpoint,
   url: [host: "localhost"],
@@ -20,6 +16,10 @@ config :gestalt, GestaltWeb.Endpoint,
     layout: false
   ],
   pubsub_server: Gestalt.PubSub
+
+config :gestalt,
+  ecto_repos: [Gestalt.Repo],
+  generators: [timestamp_type: :utc_datetime]
 
 # Configure Elixir's Logger
 config :logger, :default_formatter,

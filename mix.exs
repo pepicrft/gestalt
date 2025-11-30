@@ -52,7 +52,8 @@ defmodule Gestalt.MixProject do
 
       # Dev/Test
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:mimic, "~> 1.11", only: :test}
+      {:mimic, "~> 1.11", only: :test},
+      {:quokka, "~> 2.11", only: [:dev, :test], runtime: false}
     ]
   end
 
