@@ -8,8 +8,6 @@ on:
 
 env:
   MIX_ENV: test
-  ELIXIR_VERSION: "1.17"
-  OTP_VERSION: "27"
 
 jobs:
   build:
@@ -20,11 +18,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
+      - name: Set up Mise
+        uses: jdx/mise-action@v2
 
       - name: Restore dependencies cache
         uses: actions/cache@v4
@@ -32,9 +27,9 @@ jobs:
           path: |
             deps
             _build
-          key: ${{ runner.os }}-mix-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ hashFiles('**/mix.lock') }}
+          key: ${{ runner.os }}-mix-${{ hashFiles('mise.toml') }}-${{ hashFiles('**/mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-mix-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-
+            ${{ runner.os }}-mix-${{ hashFiles('mise.toml') }}-
 
       - name: Install dependencies
         run: mix deps.get
@@ -57,11 +52,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
+      - name: Set up Mise
+        uses: jdx/mise-action@v2
 
       - name: Restore dependencies cache
         uses: actions/cache@v4
@@ -69,9 +61,9 @@ jobs:
           path: |
             deps
             _build
-          key: ${{ runner.os }}-mix-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ hashFiles('**/mix.lock') }}
+          key: ${{ runner.os }}-mix-${{ hashFiles('mise.toml') }}-${{ hashFiles('**/mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-mix-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-
+            ${{ runner.os }}-mix-${{ hashFiles('mise.toml') }}-
 
       - name: Install dependencies
         run: mix deps.get

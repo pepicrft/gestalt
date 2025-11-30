@@ -161,25 +161,26 @@ This runs:
 
 ## Deployment
 
-### Raspberry Pi
+### Building for Production
 
-1. Install Erlang and Elixir via Mise:
+1. Clone the repository on your target host:
    ```bash
-   mise install erlang@26
-   mise install elixir@1.15
+   git clone https://github.com/pepicrft/gestalt.git
+   cd gestalt
    ```
 
-2. Build a release:
+2. Install dependencies with Mise and build the release:
    ```bash
+   mise install
+   MIX_ENV=prod mix deps.get
    MIX_ENV=prod mix release
    ```
 
-3. Copy the release to your Pi and run:
-   ```bash
-   PHX_SERVER=true ./bin/gestalt start
-   ```
+3. Configure the app to run as a daemon (see platform-specific instructions below).
 
-### Systemd Service
+### Running as a Daemon
+
+#### Linux (systemd)
 
 Create `/etc/systemd/system/gestalt.service`:
 
@@ -205,6 +206,77 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 ```
+
+Then enable and start the service:
+```bash
+sudo systemctl enable gestalt
+sudo systemctl start gestalt
+```
+
+#### macOS (launchd)
+
+Create `~/Library/LaunchAgents/com.gestalt.plist`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.gestalt</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/gestalt/bin/gestalt</string>
+        <string>start</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/opt/gestalt</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PHX_SERVER</key>
+        <string>true</string>
+        <key>DATABASE_PATH</key>
+        <string>/var/lib/gestalt/gestalt.db</string>
+        <key>SECRET_KEY_BASE</key>
+        <string>your-secret-key</string>
+        <key>TELEGRAM_BOT_TOKEN</key>
+        <string>your-token</string>
+        <key>TELEGRAM_ALLOWED_USERS</key>
+        <string>123456789</string>
+        <key>GESTALT_CODING_AGENT</key>
+        <string>claude_code</string>
+        <key>ANTHROPIC_API_KEY</key>
+        <string>your-key</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/var/log/gestalt/stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/var/log/gestalt/stderr.log</string>
+</dict>
+</plist>
+```
+
+Then load the service:
+```bash
+launchctl load ~/Library/LaunchAgents/com.gestalt.plist
+```
+
+#### Windows (NSSM)
+
+Use [NSSM (Non-Sucking Service Manager)](https://nssm.cc/) to run Gestalt as a Windows service:
+
+1. Download and install NSSM
+2. Open an elevated command prompt and run:
+   ```cmd
+   nssm install Gestalt C:\gestalt\bin\gestalt.bat start
+   nssm set Gestalt AppDirectory C:\gestalt
+   nssm set Gestalt AppEnvironmentExtra PHX_SERVER=true DATABASE_PATH=C:\gestalt\gestalt.db SECRET_KEY_BASE=your-secret-key TELEGRAM_BOT_TOKEN=your-token TELEGRAM_ALLOWED_USERS=123456789 GESTALT_CODING_AGENT=claude_code ANTHROPIC_API_KEY=your-key
+   nssm start Gestalt
+   ```
 
 ## License
 
