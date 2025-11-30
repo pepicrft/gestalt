@@ -52,9 +52,9 @@ Telegram → Poller → Conversation.Server → Task.Server → Agent/MCP → Re
 1. **Test isolation**: Each test must have its state scoped to that test only. No global state modification.
 
 2. **No shared state**: Tests must not depend on or modify:
-   - Global application state
+   - Global application state (never use `Application.put_env` in tests)
    - Shared database records (use sandbox)
-   - Environment variables (use Application.put_env in setup, restore in on_exit)
+   - Environment variables
    - File system (use tmp_dir or mock)
 
 3. **Use Mimic for mocking**:

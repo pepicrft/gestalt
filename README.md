@@ -71,12 +71,9 @@ export TELEGRAM_ALLOWED_USERS="123456789"
 
 # Which coding agent to use: "claude_code" or "codex"
 export GESTALT_CODING_AGENT="claude_code"
-
-# API key for your chosen coding agent
-export ANTHROPIC_API_KEY="sk-ant-..."  # For Claude Code
-# or
-export OPENAI_API_KEY="sk-..."          # For Codex
 ```
+
+Note: Coding agents (Claude Code, Codex) manage their own authentication. Make sure you've authenticated with your chosen agent before running Gestalt (e.g., run `claude` to set up Claude Code).
 
 ### Production Environment
 
@@ -203,7 +200,6 @@ Environment=SECRET_KEY_BASE=your-secret-key
 Environment=TELEGRAM_BOT_TOKEN=your-token
 Environment=TELEGRAM_ALLOWED_USERS=123456789
 Environment=GESTALT_CODING_AGENT=claude_code
-Environment=ANTHROPIC_API_KEY=your-key
 ExecStart=/usr/bin/mise exec -C /opt/gestalt -- /opt/gestalt/_build/prod/rel/gestalt/bin/gestalt start
 Restart=on-failure
 
@@ -254,8 +250,6 @@ Create `~/Library/LaunchAgents/com.gestalt.plist`:
         <string>123456789</string>
         <key>GESTALT_CODING_AGENT</key>
         <string>claude_code</string>
-        <key>ANTHROPIC_API_KEY</key>
-        <string>your-key</string>
     </dict>
     <key>RunAtLoad</key>
     <true/>
@@ -283,7 +277,7 @@ Use [NSSM (Non-Sucking Service Manager)](https://nssm.cc/) to run Gestalt as a W
    ```cmd
    nssm install Gestalt C:\Users\YourUser\.local\bin\mise.exe exec -C C:\gestalt -- C:\gestalt\_build\prod\rel\gestalt\bin\gestalt.bat start
    nssm set Gestalt AppDirectory C:\gestalt
-   nssm set Gestalt AppEnvironmentExtra PHX_SERVER=true DATABASE_PATH=C:\gestalt\gestalt.db SECRET_KEY_BASE=your-secret-key TELEGRAM_BOT_TOKEN=your-token TELEGRAM_ALLOWED_USERS=123456789 GESTALT_CODING_AGENT=claude_code ANTHROPIC_API_KEY=your-key
+   nssm set Gestalt AppEnvironmentExtra PHX_SERVER=true DATABASE_PATH=C:\gestalt\gestalt.db SECRET_KEY_BASE=your-secret-key TELEGRAM_BOT_TOKEN=your-token TELEGRAM_ALLOWED_USERS=123456789 GESTALT_CODING_AGENT=claude_code
    nssm start Gestalt
    ```
 
